@@ -1,22 +1,22 @@
 package hugospring.hellospring;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 
 public class Client {
     public static void main(String[] args) throws IOException {
         /**
-         * 오브젝트 팩토리
-         * 괌심사를 분리시킨다.
-         * - PaymentService와 ExRateProvider의 관계 설정의 책임을 ObjectFactory로 분리
-         * - 클라이언트로서의 책임만 남긴다.
+         * BeanFactory(스프링컨테이너)는 무엇을 가지고 오브젝트를 만드는지 알 수 없음
+         * => @Bean 메소드들을 없애면 에러가 난다.
          *
-         * 이제 모든 클래스가 각 클래스만의 관심사와 책임에 충실한 코드가 되었다.
-         * PaymentService와 ExRateProvider 인터페이스를 구현한 클래스들은
-         * 서로 영향을 주지않은채로 각자의 기능에 충실한 코드가 만들어진 것.
+         * @ComponentScan, @Component 어노테이션을 통해 구성정보를 제공할 수 있다!
          */
-        ObjectFactory objectFactory = new ObjectFactory();
-        PaymentService paymentService = objectFactory.paymentService();
+        BeanFactory beanFactory = new AnnotationConfigApplicationContext(ObjectFactory.class);
+        PaymentService paymentService = beanFactory.getBean(PaymentService.class);
+
         Payment payment = paymentService.prepare(100L, "USD", BigDecimal.valueOf(50.7));
         System.out.println(payment);
     }
